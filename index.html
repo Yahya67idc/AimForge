@@ -49,11 +49,18 @@
     background: radial-gradient(ellipse at 50% 30%, #0a1a2a 0%, #080c10 70%);
     flex-direction: column;
     gap: 0;
+    overflow-y: auto;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 40px 16px 40px;
   }
 
   .intro-inner {
     text-align: center;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .logo {
@@ -752,6 +759,165 @@
     vertical-align: middle;
   }
 
+  /* ── PAUSE OVERLAY ── */
+  #pause-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(8,12,16,0.88);
+    backdrop-filter: blur(8px);
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  #pause-overlay.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+  #pause-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+  #pause-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    letter-spacing: 10px;
+    color: var(--accent);
+    text-shadow: var(--glow);
+  }
+  #pause-score-wrap {
+    display: flex;
+    gap: 2px;
+  }
+  .pause-stat {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 90px;
+  }
+  .pause-lbl {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .pause-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--accent);
+    line-height: 1.2;
+  }
+  .pause-val.good { color: var(--accent3); }
+  .pause-val.warn { color: var(--accent2); }
+  #pause-btns { display: flex; gap: 12px; }
+  .pause-action-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 4px;
+    padding: 12px 32px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .pause-action-btn.primary { border-color: var(--accent); color: var(--accent); }
+  .pause-action-btn:hover { border-color: var(--accent); color: var(--accent); }
+  #pause-hint {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+  }
+  #pause-hint span {
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    font-size: 10px;
+  }
+
+  /* ── INTRO STATS PANEL ── */
+  #intro-stats {
+    display: flex;
+    gap: 16px;
+    margin-top: 28px;
+    width: min(700px, 92vw);
+  }
+  #intro-stats-left, #intro-stats-right {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 16px 18px;
+    flex: 1;
+  }
+  .intro-stat-label {
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+  }
+  .intro-pb-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .intro-pb-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 8px 10px;
+    text-align: center;
+  }
+  .intro-pb-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .intro-pb-lbl {
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .intro-pb-plays {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-align: center;
+    margin-top: 4px;
+  }
+  .rec-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+  .rec-icon {
+    flex-shrink: 0;
+    font-size: 13px;
+    margin-top: 1px;
+  }
+  .rec-no-data {
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    letter-spacing: 0.5px;
+  }
+
 </style>
 </head>
 <body>
@@ -767,6 +933,35 @@
         <input type="number" class="age-input" id="age-input" min="5" max="99" placeholder="--" maxlength="2">
       </div>
       <button class="start-btn" id="start-btn">Initialize</button>
+    </div>
+    <!-- Stats & Recommendations panel -->
+    <div id="intro-stats">
+      <div id="intro-stats-left">
+        <div class="intro-stat-label">Personal Bests</div>
+        <div class="intro-pb-grid">
+          <div class="intro-pb-card">
+            <div class="intro-pb-val" id="pb-score">--</div>
+            <div class="intro-pb-lbl">High Score</div>
+          </div>
+          <div class="intro-pb-card">
+            <div class="intro-pb-val" id="pb-acc">--%</div>
+            <div class="intro-pb-lbl">Best Accuracy</div>
+          </div>
+          <div class="intro-pb-card">
+            <div class="intro-pb-val" id="pb-rt">--ms</div>
+            <div class="intro-pb-lbl">Best Reaction</div>
+          </div>
+          <div class="intro-pb-card">
+            <div class="intro-pb-val" id="pb-grade" style="color:var(--accent3)">--</div>
+            <div class="intro-pb-lbl">Best Grade</div>
+          </div>
+        </div>
+        <div class="intro-pb-plays" id="pb-plays">0 sessions played</div>
+      </div>
+      <div id="intro-stats-right">
+        <div class="intro-stat-label">Recommendations</div>
+        <div id="intro-recs"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -809,6 +1004,7 @@
       <span class="hud-label">Level</span>
       <span class="hud-value" id="level-display" style="color:#ffa500">1</span>
     </div>
+    <button class="settings-btn" id="pause-btn">⏸ Pause</button>
     <button class="settings-btn" id="toggle-settings">⚙ Settings</button>
   </div>
   <!-- XP Bar -->
@@ -829,6 +1025,24 @@
   <div id="countdown-overlay">
     <div id="countdown-number"></div>
     <div id="countdown-label">GET READY</div>
+  </div>
+
+  <!-- Pause overlay -->
+  <div id="pause-overlay">
+    <div id="pause-inner">
+      <div id="pause-title">Paused</div>
+      <div id="pause-score-wrap">
+        <div class="pause-stat"><span class="pause-lbl">Score</span><span class="pause-val" id="pause-score">0</span></div>
+        <div class="pause-stat"><span class="pause-lbl">Hits</span><span class="pause-val good" id="pause-hits">0</span></div>
+        <div class="pause-stat"><span class="pause-lbl">Misses</span><span class="pause-val warn" id="pause-misses">0</span></div>
+        <div class="pause-stat"><span class="pause-lbl">Accuracy</span><span class="pause-val" id="pause-acc">--%</span></div>
+      </div>
+      <div id="pause-btns">
+        <button class="pause-action-btn primary" id="resume-btn">▶ Resume</button>
+        <button class="pause-action-btn" id="pause-menu-btn">⌂ Main Menu</button>
+      </div>
+      <div id="pause-hint">Press <span>ESC</span> or <span>P</span> to resume</div>
+    </div>
   </div>
 </div>
 
@@ -966,6 +1180,7 @@ const state = {
   reactions: [],
   timeLeft: 60,
   running: false,
+  paused: false,
   targets: [],
   spawnInterval: null,
   countdownInterval: null,
@@ -974,7 +1189,7 @@ const state = {
   xp: parseInt(localStorage.getItem('af_xp') || '0'),
   level: parseInt(localStorage.getItem('af_level') || '1'),
   // Click tracking for heatmap
-  clickLog: [], // {x, y, type: 'hit'|'miss'|'shrunk'}
+  clickLog: [],
   settings: {
     targetSize: 50,
     lifetime: 2000,
@@ -989,6 +1204,170 @@ const state = {
 
 // ── XP thresholds per level ──
 function xpForLevel(lvl) { return Math.floor(300 * Math.pow(lvl, 1.4)); }
+
+// ── High Score / Personal Bests ──
+function getRecords() {
+  try { return JSON.parse(localStorage.getItem('af_records') || 'null') || { score: 0, acc: 0, rt: null, grade: '--', plays: 0, lastAccs: [], lastRts: [] }; }
+  catch(e) { return { score: 0, acc: 0, rt: null, grade: '--', plays: 0, lastAccs: [], lastRts: [] }; }
+}
+
+function saveRecords(r) {
+  localStorage.setItem('af_records', JSON.stringify(r));
+}
+
+function updateRecords(score, acc, rt, grade) {
+  const r = getRecords();
+  r.plays = (r.plays || 0) + 1;
+  if (score > r.score) r.score = score;
+  if (acc > r.acc) r.acc = acc;
+  if (rt && (!r.rt || rt < r.rt)) r.rt = rt;
+  const gradeOrder = ['F','D','C','B','A','S'];
+  if (gradeOrder.indexOf(grade) > gradeOrder.indexOf(r.grade)) r.grade = grade;
+  // Keep last 5 sessions for trend
+  r.lastAccs = [...(r.lastAccs || []), acc].slice(-5);
+  if (rt) r.lastRts = [...(r.lastRts || []), rt].slice(-5);
+  saveRecords(r);
+  return r;
+}
+
+function buildRecommendations(r) {
+  const recs = document.getElementById('intro-recs');
+  if (!r || r.plays === 0) {
+    recs.innerHTML = `<div class="rec-no-data">Play your first session to unlock<br>personalised training recommendations!</div>`;
+    return;
+  }
+  const items = [];
+  const avgAcc = r.lastAccs.length ? Math.round(r.lastAccs.reduce((a,b)=>a+b,0)/r.lastAccs.length) : r.acc;
+  const avgRt  = r.lastRts.length  ? Math.round(r.lastRts.reduce((a,b)=>a+b,0)/r.lastRts.length)  : r.rt;
+  const accTrend = r.lastAccs.length >= 2 ? r.lastAccs[r.lastAccs.length-1] - r.lastAccs[0] : 0;
+  const rtTrend  = r.lastRts.length  >= 2 ? r.lastRts[r.lastRts.length-1]  - r.lastRts[0]  : 0;
+
+  if (avgAcc < 50)       items.push({ icon: '🎯', text: 'Your accuracy is below 50% — try <b>Precision mode</b> to train clicking only when you\'re sure.' });
+  else if (avgAcc < 70)  items.push({ icon: '🎯', text: 'Accuracy is building up. Focus on <b>smaller targets</b> in settings to sharpen your aim.' });
+  else                   items.push({ icon: '✅', text: `Great accuracy at ${avgAcc}%! Try <b>Flicker mode</b> to push your reaction speed next.` });
+
+  if (avgRt && avgRt > 600)      items.push({ icon: '⚡', text: 'Reaction time is slow — try <b>Flicker mode</b> with short lifetime to train snappier responses.' });
+  else if (avgRt && avgRt > 350) items.push({ icon: '⚡', text: `${avgRt}ms average reaction is decent. Daily short sessions will bring it under 300ms.` });
+  else if (avgRt)                items.push({ icon: '🔥', text: `${avgRt}ms reactions — you're in the top tier! Try <b>moving targets</b> to maintain that edge.` });
+
+  if (accTrend > 5)  items.push({ icon: '📈', text: 'Your accuracy is <b>improving</b> across recent sessions. Keep the momentum!' });
+  if (accTrend < -5) items.push({ icon: '📉', text: 'Accuracy dipped recently — slow down slightly and aim <b>before</b> clicking.' });
+  if (rtTrend > 80)  items.push({ icon: '⚠️', text: 'Reaction time getting slower recently — make sure you\'re not fatigued before playing.' });
+
+  if (r.plays >= 5 && r.plays < 10) items.push({ icon: '🏋️', text: `${r.plays} sessions in — consistency is key. Try to play at least once a day for best results.` });
+  if (r.plays >= 10) items.push({ icon: '🏆', text: `${r.plays} sessions played! Your best grade is <b>${r.grade}</b>. Can you hit S rank?` });
+
+  recs.innerHTML = items.slice(0, 3).map(i =>
+    `<div class="rec-item"><span class="rec-icon">${i.icon}</span><span>${i.text}</span></div>`
+  ).join('');
+}
+
+function loadIntroStats() {
+  const r = getRecords();
+  document.getElementById('pb-score').textContent = r.score > 0 ? r.score.toLocaleString() : '--';
+  document.getElementById('pb-acc').textContent   = r.acc > 0   ? r.acc + '%'              : '--%';
+  document.getElementById('pb-rt').textContent    = r.rt        ? r.rt + 'ms'              : '--ms';
+  document.getElementById('pb-grade').textContent = r.grade || '--';
+  document.getElementById('pb-plays').textContent = (r.plays || 0) + ' session' + (r.plays === 1 ? '' : 's') + ' played';
+  buildRecommendations(r);
+}
+
+// ── Pause ──
+function pauseGame() {
+  if (!state.running || state.paused) return;
+  state.paused = true;
+  clearInterval(state.spawnInterval);
+  clearInterval(state.countdownInterval);
+  // Freeze all shrink/move intervals
+  state.targets.forEach(t => {
+    clearInterval(t.shrinkInterval);
+    clearInterval(t.moveInterval);
+    // Store remaining scale
+    const style = window.getComputedStyle(t.el);
+    const matrix = style.transform;
+    t._pausedTransform = t.el.style.transform;
+  });
+  // Update pause overlay stats
+  document.getElementById('pause-score').textContent = state.score;
+  document.getElementById('pause-hits').textContent = state.hits;
+  document.getElementById('pause-misses').textContent = state.misses;
+  const total = state.hits + state.misses;
+  document.getElementById('pause-acc').textContent = total > 0 ? Math.round(state.hits/total*100)+'%' : '--%';
+  document.getElementById('pause-overlay').classList.add('visible');
+  document.getElementById('pause-btn').textContent = '▶ Resume';
+}
+
+function resumeGame() {
+  if (!state.paused) return;
+  state.paused = false;
+  document.getElementById('pause-overlay').classList.remove('visible');
+  document.getElementById('pause-btn').textContent = '⏸ Pause';
+
+  // Re-attach shrink intervals for remaining targets
+  const s = state.settings;
+  const TICK = 16;
+  const aW = arena.clientWidth;
+  const aH = arena.clientHeight;
+
+  state.targets.forEach(t => {
+    if (t.dead) return;
+    // Parse current scale from transform
+    const match = (t._pausedTransform || '').match(/scale\(([\d.]+)\)/);
+    let currentScale = match ? parseFloat(match[1]) : 1;
+    const remainingTime = currentScale * s.lifetime;
+    let elapsed = s.lifetime - remainingTime;
+
+    t.shrinkInterval = setInterval(() => {
+      elapsed += TICK;
+      const pct = Math.max(0, 1 - elapsed / s.lifetime);
+      t.el.style.transform = `translate(-50%, -50%) scale(${pct})`;
+      if (pct <= 0.01 && !t.dead) {
+        t.dead = true;
+        removeTarget(t, true);
+        state.misses++;
+        state.combo = 0;
+        playMiss();
+        state.clickLog.push({ x: t.x, y: t.y, type: 'shrunk' });
+        updateHUD();
+        const flash = document.createElement('div');
+        flash.className = 'miss-flash';
+        arena.appendChild(flash);
+        setTimeout(() => flash.remove(), 300);
+      }
+    }, TICK);
+
+    if (s.moving) {
+      const padding = s.targetSize;
+      t.moveInterval = setInterval(() => {
+        if (t.dead) return;
+        t.x += t.vx; t.y += t.vy;
+        if (t.x < padding) { t.x = padding; t.vx *= -1; }
+        if (t.x > aW - padding) { t.x = aW - padding; t.vx *= -1; }
+        if (t.y < padding) { t.y = padding; t.vy *= -1; }
+        if (t.y > aH - padding) { t.y = aH - padding; t.vy *= -1; }
+        t.el.style.left = t.x + 'px';
+        t.el.style.top  = t.y + 'px';
+      }, 16);
+    }
+  });
+
+  // Restart spawn and countdown intervals
+  state.spawnInterval = setInterval(spawnTarget, s.spawnRate);
+  state.countdownInterval = setInterval(() => {
+    state.timeLeft--;
+    const pct = (state.timeLeft / s.duration) * 100;
+    timerBar.style.width = pct + '%';
+    if (pct < 30) timerBar.style.background = 'var(--accent2)';
+    else timerBar.style.background = 'var(--accent)';
+    timeEl.textContent = state.timeLeft;
+    if (state.timeLeft <= 0) endGame();
+  }, 1000);
+}
+
+function togglePause() {
+  if (state.paused) resumeGame();
+  else pauseGame();
+}
 
 // ── Audio Engine (Web Audio API) ──
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -1183,6 +1562,8 @@ function runCountdown(callback) {
 }
 
 // ── Intro ──
+loadIntroStats();
+
 document.getElementById('start-btn').addEventListener('click', () => {
   const age = parseInt(document.getElementById('age-input').value);
   if (!age || age < 5 || age > 99) {
@@ -1201,6 +1582,31 @@ document.getElementById('start-btn').addEventListener('click', () => {
 
 document.getElementById('age-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('start-btn').click();
+});
+
+// ── Pause controls ──
+document.getElementById('pause-btn').addEventListener('click', togglePause);
+
+document.getElementById('resume-btn').addEventListener('click', resumeGame);
+
+document.getElementById('pause-menu-btn').addEventListener('click', () => {
+  // Stop game and go to menu
+  clearInterval(state.spawnInterval);
+  clearInterval(state.countdownInterval);
+  state.running = false;
+  state.paused = false;
+  clearAllTargets();
+  document.getElementById('pause-overlay').classList.remove('visible');
+  document.getElementById('game').classList.add('hidden');
+  document.getElementById('intro').classList.remove('hidden');
+  loadIntroStats();
+});
+
+// ESC or P to pause/resume
+document.addEventListener('keydown', e => {
+  if ((e.key === 'Escape' || e.key === 'p' || e.key === 'P') && state.running) {
+    togglePause();
+  }
 });
 
 // ── Settings Panel ──
@@ -1308,7 +1714,7 @@ function applySettingsToSliders() {
 
 // ── Miss on arena click ──
 arena.addEventListener('click', (e) => {
-  if (!state.running) return;
+  if (!state.running || state.paused) return;
   if (e.target === arena || e.target.id === 'combo-display' || e.target.id === 'level-up-toast') {
     state.misses++;
     state.combo = 0;
@@ -1500,7 +1906,7 @@ function removeTarget(targetData, expired = false) {
 }
 
 function hitTarget(targetData) {
-  if (!state.running || targetData.dead) return;
+  if (!state.running || state.paused || targetData.dead) return;
   const rt = Date.now() - targetData.spawnTime;
   state.reactions.push(rt);
 
@@ -1738,6 +2144,9 @@ function endGame() {
   const sessionXP = Math.floor(acc * 1.5 + state.hits * 3);
   awardXP(sessionXP);
 
+  // Save personal bests
+  updateRecords(state.score, acc, avgRt, grade);
+
   document.getElementById('game').classList.add('hidden');
   document.getElementById('results').classList.remove('hidden');
 
@@ -1754,6 +2163,7 @@ document.getElementById('retry-btn').addEventListener('click', () => {
 document.getElementById('menu-btn').addEventListener('click', () => {
   document.getElementById('results').classList.add('hidden');
   document.getElementById('intro').classList.remove('hidden');
+  loadIntroStats();
 });
 </script>
 </body>
