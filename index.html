@@ -918,7 +918,177 @@
     letter-spacing: 0.5px;
   }
 
-  /* ── AUTH MODAL ── */
+  /* ── LANDING SCREEN ── */
+  #landing {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 30%, #0a1a2a 0%, #080c10 70%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 300;
+    transition: opacity 0.4s;
+  }
+  #landing.hidden { display: none; }
+
+  #landing-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: min(460px, 94vw);
+    gap: 0;
+  }
+
+  #landing-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(56px, 12vw, 110px);
+    letter-spacing: 8px;
+    color: var(--accent);
+    text-shadow: 0 0 40px rgba(0,229,255,0.6), 0 0 80px rgba(0,229,255,0.2);
+    animation: flicker 4s infinite;
+    line-height: 1;
+  }
+  #landing-logo span { color: var(--accent2); }
+
+  #landing-tagline {
+    font-size: 10px;
+    letter-spacing: 6px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 48px;
+    margin-top: 6px;
+  }
+
+  #landing-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    width: 100%;
+    padding: 32px 36px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .landing-tabs {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 26px;
+  }
+
+  .landing-tab {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 17px;
+    letter-spacing: 3px;
+    padding: 9px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .landing-tab.active { border-color: var(--accent); color: var(--accent); background: rgba(0,229,255,0.05); }
+
+  .landing-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .landing-field label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .landing-field input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+    letter-spacing: 1px;
+    width: 100%;
+  }
+  .landing-field input:focus { border-color: var(--accent); }
+
+  #landing-error {
+    font-size: 10px;
+    color: var(--accent2);
+    letter-spacing: 1px;
+    min-height: 18px;
+    margin-bottom: 6px;
+  }
+  #landing-success {
+    font-size: 10px;
+    color: var(--accent3);
+    letter-spacing: 1px;
+    min-height: 18px;
+    margin-bottom: 6px;
+  }
+
+  #landing-submit {
+    background: var(--accent);
+    border: none;
+    color: var(--bg);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 6px;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  #landing-submit:hover { background: #00cfee; }
+
+  .landing-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 6px 0 10px;
+    color: var(--text-dim);
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .landing-divider::before,
+  .landing-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  #landing-guest {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+    width: 100%;
+    text-align: center;
+  }
+  #landing-guest:hover { border-color: var(--text-dim); color: var(--text); }
+
+  #landing-guest-warning {
+    font-size: 9px;
+    color: var(--accent2);
+    letter-spacing: 1px;
+    text-align: center;
+    margin-top: 7px;
+    opacity: 0.8;
+  }
+
+  /* ── AUTH MODAL (kept for sign-in button in main menu) ── */
   #auth-modal {
     position: fixed;
     inset: 0;
@@ -1105,7 +1275,6 @@
   .user-bar-btn:hover { border-color: var(--accent); color: var(--accent); }
   .user-bar-btn.danger:hover { border-color: var(--accent2); color: var(--accent2); }
 
-  /* cloud sync badge on pb cards */
   .sync-badge {
     font-size: 8px;
     letter-spacing: 1px;
@@ -1117,6 +1286,57 @@
 </head>
 <body>
 
+<!-- LANDING SCREEN (first thing user sees) -->
+<div id="landing">
+  <div id="landing-inner">
+    <div id="landing-logo">Aim<span>Forge</span></div>
+    <div id="landing-tagline">Precision · Reaction · Dominance</div>
+    <div id="landing-card">
+      <div class="landing-tabs">
+        <button class="landing-tab active" data-ltab="login">Sign In</button>
+        <button class="landing-tab" data-ltab="register">Sign Up</button>
+      </div>
+
+      <!-- Login fields -->
+      <div id="landing-login-fields">
+        <div class="landing-field">
+          <label>Username</label>
+          <input type="text" id="l-login-user" placeholder="your username" autocomplete="username">
+        </div>
+        <div class="landing-field">
+          <label>Password</label>
+          <input type="password" id="l-login-pass" placeholder="••••••••" autocomplete="current-password">
+        </div>
+      </div>
+
+      <!-- Register fields -->
+      <div id="landing-register-fields" style="display:none">
+        <div class="landing-field">
+          <label>Username</label>
+          <input type="text" id="l-reg-user" placeholder="choose a username" autocomplete="username">
+        </div>
+        <div class="landing-field">
+          <label>Password</label>
+          <input type="password" id="l-reg-pass" placeholder="••••••••" autocomplete="new-password">
+        </div>
+        <div class="landing-field">
+          <label>Confirm Password</label>
+          <input type="password" id="l-reg-pass2" placeholder="••••••••" autocomplete="new-password">
+        </div>
+      </div>
+
+      <div id="landing-error"></div>
+      <div id="landing-success"></div>
+      <button id="landing-submit">Sign In</button>
+
+      <div class="landing-divider">or</div>
+
+      <button id="landing-guest">🎮 Play as Guest</button>
+      <div id="landing-guest-warning">⚠ Guest progress is lost when you close the browser</div>
+    </div>
+  </div>
+</div>
+
 <!-- USER BAR -->
 <div id="user-bar">
   <div id="user-name-display"></div>
@@ -1124,7 +1344,7 @@
   <button class="user-bar-btn danger" id="signout-btn" style="display:none">Sign Out</button>
 </div>
 
-<!-- AUTH MODAL -->
+<!-- AUTH MODAL (for sign-in from main menu) -->
 <div id="auth-modal">
   <div id="auth-box">
     <button id="auth-close">✕</button>
@@ -1161,7 +1381,7 @@
     <div id="auth-error"></div>
     <div id="auth-success"></div>
     <button id="auth-submit">Login</button>
-    <button id="auth-guest">Continue as Guest (progress saves locally only)</button>
+    <button id="auth-guest">Continue as Guest</button>
   </div>
 </div>
 
@@ -1522,12 +1742,6 @@ function authLogin(username, password) {
   if (user.password !== hashPassword(password)) return { error: 'Incorrect password' };
   setSession(username.toLowerCase());
   return { success: true, username: user.username };
-}
-
-function authSignOut() {
-  setSession(null);
-  updateUserBar();
-  loadIntroStats();
 }
 
 // Save records to current user account if logged in
@@ -2024,6 +2238,98 @@ function runCountdown(callback) {
   }
 
   tick();
+}
+
+// ── LANDING SCREEN ──
+function dismissLanding() {
+  const el = document.getElementById('landing');
+  el.style.opacity = '0';
+  el.style.transition = 'opacity 0.4s';
+  setTimeout(() => el.classList.add('hidden'), 400);
+}
+
+// If already logged in, skip landing
+if (getSession()) {
+  dismissLanding();
+}
+
+let currentLandingTab = 'login';
+
+document.querySelectorAll('.landing-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    currentLandingTab = tab.dataset.ltab;
+    document.querySelectorAll('.landing-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('landing-login-fields').style.display    = currentLandingTab === 'login'    ? '' : 'none';
+    document.getElementById('landing-register-fields').style.display = currentLandingTab === 'register' ? '' : 'none';
+    document.getElementById('landing-submit').textContent = currentLandingTab === 'login' ? 'Sign In' : 'Create Account';
+    document.getElementById('landing-error').textContent = '';
+    document.getElementById('landing-success').textContent = '';
+  });
+});
+
+document.getElementById('landing-submit').addEventListener('click', () => {
+  const errEl = document.getElementById('landing-error');
+  const sucEl = document.getElementById('landing-success');
+  errEl.textContent = '';
+  sucEl.textContent = '';
+
+  if (currentLandingTab === 'login') {
+    const username = document.getElementById('l-login-user').value.trim();
+    const password = document.getElementById('l-login-pass').value;
+    const result = authLogin(username, password);
+    if (result.error) { errEl.textContent = result.error; return; }
+    sucEl.textContent = `Welcome back, ${result.username}! Loading...`;
+    setTimeout(() => {
+      dismissLanding();
+      updateUserBar();
+      updateXPBar();
+      loadIntroStats();
+    }, 700);
+  } else {
+    const username = document.getElementById('l-reg-user').value.trim();
+    const password = document.getElementById('l-reg-pass').value;
+    const password2 = document.getElementById('l-reg-pass2').value;
+    const result = authRegister(username, password, password2);
+    if (result.error) { errEl.textContent = result.error; return; }
+    sucEl.textContent = `Account created! Welcome, ${result.username}!`;
+    setTimeout(() => {
+      dismissLanding();
+      updateUserBar();
+      updateXPBar();
+      loadIntroStats();
+    }, 700);
+  }
+});
+
+document.getElementById('landing-guest').addEventListener('click', () => {
+  dismissLanding();
+  updateUserBar();
+  loadIntroStats();
+});
+
+// Enter key on landing fields
+['l-login-user','l-login-pass','l-reg-user','l-reg-pass','l-reg-pass2'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('landing-submit').click(); });
+});
+
+// Sign out goes back to landing
+function authSignOut() {
+  setSession(null);
+  updateUserBar();
+  loadIntroStats();
+  // Show landing again
+  const landing = document.getElementById('landing');
+  landing.classList.remove('hidden');
+  landing.style.opacity = '1';
+  // Clear landing fields
+  ['l-login-user','l-login-pass','l-reg-user','l-reg-pass','l-reg-pass2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('landing-error').textContent = '';
+  document.getElementById('landing-success').textContent = '';
 }
 
 // ── Intro ──
