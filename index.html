@@ -918,9 +918,252 @@
     letter-spacing: 0.5px;
   }
 
+  /* ── AUTH MODAL ── */
+  #auth-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(8,12,16,0.92);
+    backdrop-filter: blur(10px);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  #auth-modal.visible { opacity: 1; pointer-events: all; }
+
+  #auth-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    padding: 36px 40px;
+    width: min(420px, 92vw);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+
+  #auth-close {
+    position: absolute;
+    top: 14px; right: 16px;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.15s;
+  }
+  #auth-close:hover { color: var(--accent2); }
+
+  #auth-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 5px;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  #auth-subtitle {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    margin-bottom: 28px;
+  }
+
+  .auth-tabs {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 24px;
+  }
+
+  .auth-tab {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 3px;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .auth-tab.active { border-color: var(--accent); color: var(--accent); background: rgba(0,229,255,0.05); }
+
+  .auth-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .auth-field label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .auth-field input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+    letter-spacing: 1px;
+  }
+  .auth-field input:focus { border-color: var(--accent); }
+
+  #auth-error {
+    font-size: 10px;
+    color: var(--accent2);
+    letter-spacing: 1px;
+    min-height: 16px;
+    margin-bottom: 8px;
+  }
+
+  #auth-success {
+    font-size: 10px;
+    color: var(--accent3);
+    letter-spacing: 1px;
+    min-height: 16px;
+    margin-bottom: 8px;
+  }
+
+  #auth-submit {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 5px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    width: 100%;
+    margin-bottom: 12px;
+  }
+  #auth-submit:hover { background: var(--accent); color: var(--bg); }
+
+  #auth-guest {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 4px;
+    transition: color 0.15s;
+    width: 100%;
+    text-align: center;
+  }
+  #auth-guest:hover { color: var(--text); }
+
+  /* ── USER INDICATOR (top of intro) ── */
+  #user-bar {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 100;
+  }
+
+  #user-name-display {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+  }
+
+  #user-name-display span {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .user-bar-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+  }
+  .user-bar-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .user-bar-btn.danger:hover { border-color: var(--accent2); color: var(--accent2); }
+
+  /* cloud sync badge on pb cards */
+  .sync-badge {
+    font-size: 8px;
+    letter-spacing: 1px;
+    color: var(--accent3);
+    margin-top: 2px;
+  }
+
 </style>
 </head>
 <body>
+
+<!-- USER BAR -->
+<div id="user-bar">
+  <div id="user-name-display"></div>
+  <button class="user-bar-btn" id="signin-btn">Sign In</button>
+  <button class="user-bar-btn danger" id="signout-btn" style="display:none">Sign Out</button>
+</div>
+
+<!-- AUTH MODAL -->
+<div id="auth-modal">
+  <div id="auth-box">
+    <button id="auth-close">✕</button>
+    <div id="auth-title">AimForge</div>
+    <div id="auth-subtitle">Save your progress across devices</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="login">Login</button>
+      <button class="auth-tab" data-tab="register">Register</button>
+    </div>
+    <div id="auth-login-fields">
+      <div class="auth-field">
+        <label>Username</label>
+        <input type="text" id="login-user" placeholder="your username" autocomplete="username">
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+      </div>
+    </div>
+    <div id="auth-register-fields" style="display:none">
+      <div class="auth-field">
+        <label>Username</label>
+        <input type="text" id="reg-user" placeholder="choose a username" autocomplete="username">
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="reg-pass" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <div class="auth-field">
+        <label>Confirm Password</label>
+        <input type="password" id="reg-pass2" placeholder="••••••••" autocomplete="new-password">
+      </div>
+    </div>
+    <div id="auth-error"></div>
+    <div id="auth-success"></div>
+    <button id="auth-submit">Login</button>
+    <button id="auth-guest">Continue as Guest (progress saves locally only)</button>
+  </div>
+</div>
 
 <!-- INTRO SCREEN -->
 <div id="intro" class="screen">
@@ -957,6 +1200,7 @@
           </div>
         </div>
         <div class="intro-pb-plays" id="pb-plays">0 sessions played</div>
+        <div class="sync-badge" id="sync-status"></div>
       </div>
       <div id="intro-stats-right">
         <div class="intro-stat-label">Recommendations</div>
@@ -1205,15 +1449,236 @@ const state = {
 // ── XP thresholds per level ──
 function xpForLevel(lvl) { return Math.floor(300 * Math.pow(lvl, 1.4)); }
 
-// ── High Score / Personal Bests ──
+// ══════════════════════════════════════════════
+// ── AUTH SYSTEM (localStorage-based accounts) ──
+// Stores all users in localStorage under 'af_users'
+// Current session stored under 'af_session'
+// ══════════════════════════════════════════════
+
+function getUsers() {
+  try { return JSON.parse(localStorage.getItem('af_users') || '{}'); }
+  catch(e) { return {}; }
+}
+
+function saveUsers(users) {
+  localStorage.setItem('af_users', JSON.stringify(users));
+}
+
+function getSession() {
+  try { return JSON.parse(localStorage.getItem('af_session') || 'null'); }
+  catch(e) { return null; }
+}
+
+function setSession(username) {
+  if (username) localStorage.setItem('af_session', JSON.stringify({ username, loginTime: Date.now() }));
+  else localStorage.removeItem('af_session');
+}
+
+function getCurrentUser() {
+  const session = getSession();
+  if (!session) return null;
+  const users = getUsers();
+  return users[session.username] || null;
+}
+
+function hashPassword(pass) {
+  // Simple hash (not cryptographic, but fine for localStorage-based system)
+  let h = 0;
+  for (let i = 0; i < pass.length; i++) {
+    h = Math.imul(31, h) + pass.charCodeAt(i) | 0;
+  }
+  return h.toString(36);
+}
+
+function authRegister(username, password, password2) {
+  if (!username || username.length < 3) return { error: 'Username must be at least 3 characters' };
+  if (!/^[a-zA-Z0-9_]+$/.test(username)) return { error: 'Username can only contain letters, numbers, _' };
+  if (!password || password.length < 6) return { error: 'Password must be at least 6 characters' };
+  if (password !== password2) return { error: 'Passwords do not match' };
+  const users = getUsers();
+  if (users[username.toLowerCase()]) return { error: 'Username already taken' };
+  // Migrate any local guest records to this new account
+  const guestRecords = getRecords();
+  const guestXP = parseInt(localStorage.getItem('af_xp') || '0');
+  const guestLevel = parseInt(localStorage.getItem('af_level') || '1');
+  users[username.toLowerCase()] = {
+    username,
+    password: hashPassword(password),
+    createdAt: Date.now(),
+    records: guestRecords,
+    xp: guestXP,
+    level: guestLevel,
+  };
+  saveUsers(users);
+  setSession(username.toLowerCase());
+  return { success: true, username };
+}
+
+function authLogin(username, password) {
+  if (!username || !password) return { error: 'Please fill in all fields' };
+  const users = getUsers();
+  const user = users[username.toLowerCase()];
+  if (!user) return { error: 'Username not found' };
+  if (user.password !== hashPassword(password)) return { error: 'Incorrect password' };
+  setSession(username.toLowerCase());
+  return { success: true, username: user.username };
+}
+
+function authSignOut() {
+  setSession(null);
+  updateUserBar();
+  loadIntroStats();
+}
+
+// Save records to current user account if logged in
+function saveRecords(r) {
+  const session = getSession();
+  if (session) {
+    const users = getUsers();
+    if (users[session.username]) {
+      users[session.username].records = r;
+      saveUsers(users);
+    }
+  }
+  localStorage.setItem('af_records', JSON.stringify(r));
+}
+
+// Get records from account if logged in, else localStorage
 function getRecords() {
+  const session = getSession();
+  if (session) {
+    const users = getUsers();
+    const user = users[session.username];
+    if (user && user.records) return user.records;
+  }
   try { return JSON.parse(localStorage.getItem('af_records') || 'null') || { score: 0, acc: 0, rt: null, grade: '--', plays: 0, lastAccs: [], lastRts: [] }; }
   catch(e) { return { score: 0, acc: 0, rt: null, grade: '--', plays: 0, lastAccs: [], lastRts: [] }; }
 }
 
-function saveRecords(r) {
-  localStorage.setItem('af_records', JSON.stringify(r));
+function updateUserBar() {
+  const session = getSession();
+  const nameEl = document.getElementById('user-name-display');
+  const signinBtn = document.getElementById('signin-btn');
+  const signoutBtn = document.getElementById('signout-btn');
+  const syncStatus = document.getElementById('sync-status');
+
+  if (session) {
+    const users = getUsers();
+    const user = users[session.username];
+    const displayName = user ? user.username : session.username;
+    nameEl.innerHTML = `Logged in as <span>${displayName}</span>`;
+    signinBtn.style.display = 'none';
+    signoutBtn.style.display = '';
+    if (syncStatus) syncStatus.textContent = '☁ Progress synced to account';
+    // Load XP from account
+    if (user) {
+      state.xp = user.xp || 0;
+      state.level = user.level || 1;
+    }
+  } else {
+    nameEl.innerHTML = `Playing as <span style="color:var(--text-dim)">Guest</span>`;
+    signinBtn.style.display = '';
+    signoutBtn.style.display = 'none';
+    if (syncStatus) syncStatus.textContent = '⚠ Sign in to save progress to account';
+    state.xp = parseInt(localStorage.getItem('af_xp') || '0');
+    state.level = parseInt(localStorage.getItem('af_level') || '1');
+  }
 }
+
+// Save XP/level to account
+function persistXP() {
+  const session = getSession();
+  if (session) {
+    const users = getUsers();
+    if (users[session.username]) {
+      users[session.username].xp = state.xp;
+      users[session.username].level = state.level;
+      saveUsers(users);
+    }
+  }
+  localStorage.setItem('af_xp', state.xp);
+  localStorage.setItem('af_level', state.level);
+}
+
+// ── Auth Modal Logic ──
+let currentAuthTab = 'login';
+
+function openAuthModal() {
+  document.getElementById('auth-modal').classList.add('visible');
+  document.getElementById('auth-error').textContent = '';
+  document.getElementById('auth-success').textContent = '';
+}
+
+function closeAuthModal() {
+  document.getElementById('auth-modal').classList.remove('visible');
+}
+
+document.getElementById('auth-close').addEventListener('click', closeAuthModal);
+document.getElementById('auth-guest').addEventListener('click', closeAuthModal);
+
+document.getElementById('signin-btn').addEventListener('click', openAuthModal);
+document.getElementById('signout-btn').addEventListener('click', () => {
+  authSignOut();
+  updateXPBar();
+});
+
+document.querySelectorAll('.auth-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    currentAuthTab = tab.dataset.tab;
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('auth-login-fields').style.display = currentAuthTab === 'login' ? '' : 'none';
+    document.getElementById('auth-register-fields').style.display = currentAuthTab === 'register' ? '' : 'none';
+    document.getElementById('auth-submit').textContent = currentAuthTab === 'login' ? 'Login' : 'Create Account';
+    document.getElementById('auth-error').textContent = '';
+    document.getElementById('auth-success').textContent = '';
+  });
+});
+
+document.getElementById('auth-submit').addEventListener('click', () => {
+  const errEl = document.getElementById('auth-error');
+  const sucEl = document.getElementById('auth-success');
+  errEl.textContent = '';
+  sucEl.textContent = '';
+
+  if (currentAuthTab === 'login') {
+    const username = document.getElementById('login-user').value.trim();
+    const password = document.getElementById('login-pass').value;
+    const result = authLogin(username, password);
+    if (result.error) { errEl.textContent = result.error; return; }
+    sucEl.textContent = `Welcome back, ${result.username}!`;
+    setTimeout(() => {
+      closeAuthModal();
+      updateUserBar();
+      updateXPBar();
+      loadIntroStats();
+    }, 800);
+  } else {
+    const username = document.getElementById('reg-user').value.trim();
+    const password = document.getElementById('reg-pass').value;
+    const password2 = document.getElementById('reg-pass2').value;
+    const result = authRegister(username, password, password2);
+    if (result.error) { errEl.textContent = result.error; return; }
+    sucEl.textContent = `Account created! Welcome, ${result.username}!`;
+    setTimeout(() => {
+      closeAuthModal();
+      updateUserBar();
+      updateXPBar();
+      loadIntroStats();
+    }, 800);
+  }
+});
+
+// Enter key submits auth form
+['login-user','login-pass','reg-user','reg-pass','reg-pass2'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('auth-submit').click(); });
+});
+
+// Close modal on backdrop click
+document.getElementById('auth-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('auth-modal')) closeAuthModal();
+});
 
 function updateRecords(score, acc, rt, grade) {
   const r = getRecords();
@@ -1562,6 +2027,7 @@ function runCountdown(callback) {
 }
 
 // ── Intro ──
+updateUserBar();
 loadIntroStats();
 
 document.getElementById('start-btn').addEventListener('click', () => {
@@ -1746,7 +2212,7 @@ function awardXP(amount) {
     void toast.offsetWidth;
     toast.className = 'show';
   }
-  localStorage.setItem('af_xp', state.xp);
+  persistXP();
   updateXPBar();
 }
 
